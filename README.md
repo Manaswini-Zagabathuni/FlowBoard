@@ -1,4 +1,4 @@
-# FlowBoard — Kanban Task Manager
+# FlowBoard - Kanban Task Manager
 
 A polished, full-featured Kanban board built with React + TypeScript + Supabase.
 
@@ -7,15 +7,15 @@ A polished, full-featured Kanban board built with React + TypeScript + Supabase.
 ## Features
 
 - **Drag & drop** tasks across columns (To Do → In Progress → In Review → Done)
-- **Guest auth** — anonymous sign-in via Supabase, no email required
-- **Row Level Security** — each user only sees their own data
-- **Labels / Tags** — create custom color labels and filter by them
-- **Task detail panel** — slide-over with editable title, description, priority, due date
-- **Comments** — add timestamped comments to any task
-- **Activity log** — track status changes and edits per task
-- **Due date indicators** — visual badges for upcoming and overdue tasks
-- **Search & filter** — live search + filter by priority and label
-- **Board stats** — total tasks, completed, overdue at a glance
+- **Guest auth** - anonymous sign-in via Supabase, no email required
+- **Row Level Security** - each user only sees their own data
+- **Labels / Tags** - create custom color labels and filter by them
+- **Task detail panel** - slide-over with editable title, description, priority, due date
+- **Comments** - add timestamped comments to any task
+- **Activity log** - track status changes and edits per task
+- **Due date indicators** - visual badges for upcoming and overdue tasks
+- **Search & filter** - live search + filter by priority and label
+- **Board stats** - total tasks, completed, overdue at a glance
 
 ---
 
@@ -113,19 +113,19 @@ All tables have RLS enabled. Each user can only read/write their own rows.
 
 ## Design Decisions
 
-- **Vanilla CSS over Tailwind** — full control over the dark design system with CSS custom properties; easier to maintain and audit
-- **@dnd-kit over react-beautiful-dnd** — actively maintained, accessible by default, works well with React 18 strict mode
-- **Direct Supabase from frontend** — no separate Go backend needed; RLS enforces security at the database layer
-- **Optimistic updates on drag** — task position updates immediately in UI, then confirmed by Supabase; if it fails, state is reverted
-- **Anonymous auth** — zero friction for users; each guest session is isolated via RLS
+- **Vanilla CSS over Tailwind** - full control over the dark design system with CSS custom properties; easier to maintain and audit
+- **@dnd-kit over react-beautiful-dnd** - actively maintained, accessible by default, works well with React 18 strict mode
+- **Direct Supabase from frontend** - no separate Go backend needed; RLS enforces security at the database layer
+- **Optimistic updates on drag** - task position updates immediately in UI, then confirmed by Supabase; if it fails, state is reverted
+- **Anonymous auth** - zero friction for users; each guest session is isolated via RLS
 
 ---
 
 ## What I'd Improve With More Time
 
-- **Assignees / team members** — add a `team_members` table and avatar display on cards
-- **Real-time multiplayer** — the Supabase subscription is set up; with assignees it would show live cursor/drag state
-- **Column customization** — let users add/rename/reorder columns
-- **Keyboard navigation** — full keyboard-driven drag-and-drop for accessibility
-- **Offline support** — queue writes when offline and sync on reconnect
-- **Board templates** — start with pre-filled columns and example tasks
+- **Assignees / team members** - add a `team_members` table and avatar display on cards
+- **Real-time multiplayer** - the Supabase subscription is set up; with assignees it would show live cursor/drag state
+- **Column customization** - let users add/rename/reorder columns
+- **Keyboard navigation** - full keyboard-driven drag-and-drop for accessibility
+- **Offline support** - queue writes when offline and sync on reconnect
+- **Board templates** - start with pre-filled columns and example tasks
