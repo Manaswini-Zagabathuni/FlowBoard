@@ -40,7 +40,7 @@ git clone <your-repo-url>
 cd kanban-app
 npm install
 ```
-
+ 
 ### 2. Create a Supabase project
 
 1. Go to [supabase.com](https://supabase.com) and create a free account
