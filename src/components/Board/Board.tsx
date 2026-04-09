@@ -3,7 +3,7 @@ import {
   DndContext, DragEndEvent, DragOverEvent, DragStartEvent,
   PointerSensor, useSensor, useSensors, DragOverlay, closestCorners,
 } from '@dnd-kit/core';
-import { arrayMove } from '@dnd-kit/sortable';
+
 import { Task, Status, COLUMNS } from '../../types';
 import { Column } from './Column';
 import { TaskCard } from './TaskCard';

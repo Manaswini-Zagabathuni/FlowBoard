@@ -1,5 +1,5 @@
 import { Search, LayoutGrid } from 'lucide-react';
-import { Task, Label, Priority } from '../../types';
+import { Task, Label } from '../../types';
 import { isAfter, startOfDay } from 'date-fns';
 
 interface HeaderProps {

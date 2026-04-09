@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
-import { Task, Status, Priority, Label } from '../types';
+import { Task, Status, Priority } from '../types';
 
 export function useTasks(user: User | null) {
   const [tasks, setTasks] = useState<Task[]>([]);
