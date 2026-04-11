@@ -42,7 +42,7 @@ npm install
 ```
   
 ### 2. Create a Supabase project
-
+ 
 1. Go to [supabase.com](https://supabase.com) and create a free account
 2. Create a new project (free tier)
 3. Go to **Authentication → Providers → Anonymous** and **enable** anonymous sign-in
