@@ -3,7 +3,7 @@
 A polished, full-featured Kanban board built with React + TypeScript + Supabase.
 
 --- 
-
+ 
 ## Features 
 
 - **Drag & drop** tasks across columns (To Do → In Progress → In Review → Done)
