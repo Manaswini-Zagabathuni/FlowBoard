@@ -2,7 +2,7 @@
 
 A polished, full-featured Kanban board built with React + TypeScript + Supabase.
 
---- 
+---  
  
 ## Features 
  
