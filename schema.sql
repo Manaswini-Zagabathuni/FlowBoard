@@ -1,6 +1,6 @@
 -- ============================================================
 -- FlowBoard — Supabase Schema
--- Run this entire script in your Supabase SQL Editor
+-- Run this entire script in your Supabase SQL Editor 
 -- ============================================================
 
 -- Tasks
