@@ -1,0 +1,607 @@
+/* ============================================================
+   FlowBoard — Upgrade CSS additions
+   Add these at the bottom of your existing src/index.css
+   (or import as src/upgrades.css in main.tsx)
+   ============================================================ */
+
+/* ── Theme variables ─────────────────────────────────────────
+   The existing app uses CSS custom properties — these override
+   them per data-theme attribute.
+   ============================================================ */
+
+:root,
+[data-theme="dark"] {
+  --fb-bg: #0f0f13;
+  --fb-surface: #1a1a22;
+  --fb-surface2: #22222d;
+  --fb-border: rgba(255,255,255,0.08);
+  --fb-text: #e8e8f0;
+  --fb-text-muted: #888899;
+  --fb-accent: #7C3AED;
+  --fb-accent2: #10B981;
+  --fb-danger: #EF4444;
+  --fb-warn: #F59E0B;
+}
+
+[data-theme="light"] {
+  --fb-bg: #f4f4f8;
+  --fb-surface: #ffffff;
+  --fb-surface2: #f0f0f5;
+  --fb-border: rgba(0,0,0,0.08);
+  --fb-text: #1a1a2e;
+  --fb-text-muted: #6b6b80;
+  --fb-accent: #6D28D9;
+  --fb-accent2: #059669;
+  --fb-danger: #DC2626;
+  --fb-warn: #D97706;
+}
+
+/* ── Loading screen ──────────────────────────────────────────*/
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  gap: 1rem;
+  color: var(--fb-text-muted);
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--fb-border);
+  border-top-color: var(--fb-accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Kanban card upgrades ────────────────────────────────────*/
+.kanban-card {
+  background: var(--fb-surface);
+  border: 0.5px solid var(--fb-border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: transform 200ms cubic-bezier(0.25, 1, 0.5, 1),
+              box-shadow 150ms ease,
+              opacity 150ms ease;
+  position: relative;
+  user-select: none;
+}
+
+.kanban-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.kanban-card:focus-visible {
+  outline: 2px solid var(--fb-accent);
+  outline-offset: 2px;
+}
+
+/* Completed card — dimmed */
+.card-done {
+  opacity: 0.65;
+}
+.card-done .card-title {
+  text-decoration: line-through;
+}
+
+/* Spring animation on drop */
+@media (prefers-reduced-motion: no-preference) {
+  .kanban-card {
+    transition: transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1),
+                opacity 150ms ease;
+  }
+}
+
+/* Drag handle */
+.drag-handle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: var(--fb-text-muted);
+  opacity: 0;
+  cursor: grab;
+  transition: opacity 150ms;
+}
+
+.kanban-card:hover .drag-handle {
+  opacity: 1;
+}
+
+/* Card title */
+.card-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--fb-text);
+  margin: 6px 0;
+  line-height: 1.4;
+  padding-right: 20px; /* leave room for drag handle */
+}
+
+/* Card footer row */
+.card-footer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+/* Due date badge */
+.due-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--fb-surface2);
+  color: var(--fb-text-muted);
+}
+
+.due-soon {
+  background: rgba(245,158,11,0.15);
+  color: var(--fb-warn);
+}
+
+.due-overdue {
+  background: rgba(239,68,68,0.15);
+  color: var(--fb-danger);
+}
+
+/* Comment count chip */
+.meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  color: var(--fb-text-muted);
+}
+
+.overdue-icon {
+  color: var(--fb-danger);
+}
+
+/* Label chips */
+.label-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.label-chip {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+/* ── Avatar row ──────────────────────────────────────────────*/
+.avatar-row {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: 600;
+  color: #fff;
+  border: 1.5px solid var(--fb-surface);
+  margin-left: -5px;
+  transition: transform 150ms;
+}
+
+.avatar:first-child { margin-left: 0; }
+.avatar:hover { transform: scale(1.15); z-index: 1; }
+
+.avatar-overflow {
+  background: var(--fb-surface2);
+  color: var(--fb-text-muted);
+  font-size: 8px;
+}
+
+/* ── Priority badges ─────────────────────────────────────────*/
+.priority-high,
+.priority-normal,
+.priority-low {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 7px;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.priority-high   { background: rgba(239,68,68,0.15);  color: var(--fb-danger); }
+.priority-normal { background: rgba(99,102,241,0.15); color: #818CF8; }
+.priority-low    { background: rgba(16,185,129,0.15); color: var(--fb-accent2); }
+
+/* ── Column styles ───────────────────────────────────────────*/
+.kanban-column {
+  background: var(--fb-surface2);
+  border-radius: 12px;
+  min-width: 280px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 120px);
+  transition: background 150ms;
+}
+
+.column-over {
+  background: rgba(124,58,237,0.08);
+  outline: 1.5px dashed var(--fb-accent);
+}
+
+.column-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px 10px;
+  border-bottom: 0.5px solid var(--fb-border);
+}
+
+.column-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fb-text);
+  flex: 1;
+}
+
+.column-count {
+  font-size: 11px;
+  background: var(--fb-surface);
+  color: var(--fb-text-muted);
+  border-radius: 10px;
+  padding: 1px 7px;
+  border: 0.5px solid var(--fb-border);
+}
+
+/* Column accent colours */
+.col-todo       { border-top: 2px solid #6366F1; border-radius: 12px 12px 0 0; }
+.col-inprogress { border-top: 2px solid #F59E0B; border-radius: 12px 12px 0 0; }
+.col-inreview   { border-top: 2px solid #8B5CF6; border-radius: 12px 12px 0 0; }
+.col-done       { border-top: 2px solid #10B981; border-radius: 12px 12px 0 0; }
+
+.column-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 10px 16px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--fb-border) transparent;
+}
+
+.empty-column {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--fb-text-muted);
+  font-size: 13px;
+  border: 1.5px dashed var(--fb-border);
+  border-radius: 8px;
+  margin: 4px 0;
+}
+
+/* Add task button */
+.add-task-btn {
+  background: transparent;
+  border: none;
+  color: var(--fb-text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  transition: color 150ms, background 150ms;
+}
+
+.add-task-btn:hover {
+  color: var(--fb-text);
+  background: var(--fb-surface);
+}
+
+/* ── Board header ────────────────────────────────────────────*/
+.board-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  background: var(--fb-surface);
+  border-bottom: 0.5px solid var(--fb-border);
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--fb-text);
+  margin: 0;
+}
+
+.stats-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stat {
+  font-size: 12px;
+  color: var(--fb-text-muted);
+  padding: 2px 8px;
+  background: var(--fb-surface2);
+  border-radius: 8px;
+}
+
+.stat-done    { color: var(--fb-accent2); }
+.stat-overdue { color: var(--fb-danger);  }
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-input {
+  background: var(--fb-surface2);
+  border: 0.5px solid var(--fb-border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  color: var(--fb-text);
+  width: 220px;
+  outline: none;
+  transition: border-color 150ms;
+}
+
+.search-input:focus {
+  border-color: var(--fb-accent);
+}
+
+.filter-select {
+  background: var(--fb-surface2);
+  border: 0.5px solid var(--fb-border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 13px;
+  color: var(--fb-text);
+  outline: none;
+  cursor: pointer;
+}
+
+.icon-btn {
+  background: transparent;
+  border: 0.5px solid var(--fb-border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--fb-text-muted);
+  transition: background 150ms, color 150ms;
+}
+
+.icon-btn:hover {
+  background: var(--fb-surface2);
+  color: var(--fb-text);
+}
+
+/* ── Board layout ────────────────────────────────────────────*/
+.board {
+  display: flex;
+  gap: 16px;
+  padding: 20px 24px;
+  overflow-x: auto;
+  flex: 1;
+  align-items: flex-start;
+}
+
+/* ── Error banner ────────────────────────────────────────────*/
+.error-banner {
+  background: rgba(239,68,68,0.12);
+  border-bottom: 0.5px solid rgba(239,68,68,0.3);
+  color: var(--fb-danger);
+  font-size: 13px;
+  padding: 8px 24px;
+  text-align: center;
+}
+
+/* ── Keyboard shortcuts panel ────────────────────────────────*/
+.shortcuts-panel {
+  position: fixed;
+  top: 80px;
+  right: 24px;
+  background: var(--fb-surface);
+  border: 0.5px solid var(--fb-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  z-index: 200;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  min-width: 260px;
+}
+
+.shortcuts-panel h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fb-text);
+  margin-bottom: 12px;
+}
+
+.shortcuts-panel table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  color: var(--fb-text-muted);
+}
+
+.shortcuts-panel td {
+  padding: 4px 0;
+}
+
+.shortcuts-panel td:last-child {
+  padding-left: 12px;
+  color: var(--fb-text);
+}
+
+kbd {
+  background: var(--fb-surface2);
+  border: 0.5px solid var(--fb-border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 11px;
+  font-family: var(--font-mono, monospace);
+  color: var(--fb-text);
+}
+
+/* ── Template modal ──────────────────────────────────────────*/
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
+  padding: 20px;
+}
+
+.template-modal {
+  background: var(--fb-surface);
+  border-radius: 16px;
+  border: 0.5px solid var(--fb-border);
+  padding: 24px;
+  width: 100%;
+  max-width: 560px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.modal-header h2 {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--fb-text);
+}
+
+.modal-sub {
+  font-size: 13px;
+  color: var(--fb-text-muted);
+  margin-bottom: 20px;
+}
+
+.template-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.template-card {
+  background: var(--fb-surface2);
+  border: 0.5px solid var(--fb-border);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 150ms, background 150ms;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.template-card:hover {
+  border-color: var(--fb-accent);
+  background: rgba(124,58,237,0.06);
+}
+
+.template-icon {
+  color: var(--fb-accent);
+  margin-bottom: 4px;
+}
+
+.template-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fb-text);
+}
+
+.template-desc {
+  font-size: 12px;
+  color: var(--fb-text-muted);
+  line-height: 1.4;
+}
+
+.template-count {
+  font-size: 11px;
+  color: var(--fb-accent);
+  margin-top: 4px;
+}
+
+/* ── Detail panel ────────────────────────────────────────────*/
+.detail-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 420px;
+  background: var(--fb-surface);
+  border-left: 0.5px solid var(--fb-border);
+  z-index: 100;
+  overflow-y: auto;
+  animation: slideIn 220ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+/* ── Responsive ──────────────────────────────────────────────*/
+@media (max-width: 768px) {
+  .board-header {
+    padding: 10px 14px;
+    gap: 10px;
+  }
+
+  .search-input {
+    width: 140px;
+  }
+
+  .board {
+    padding: 12px 14px;
+    gap: 12px;
+  }
+
+  .kanban-column {
+    min-width: 240px;
+  }
+
+  .template-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-panel {
+    width: 100%;
+  }
+}
