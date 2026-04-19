@@ -11,19 +11,8 @@ import { GripVertical, Calendar, MessageSquare, AlertCircle } from 'lucide-react
 import type { Task, Label, TeamMember } from '../types';
 
 // ── Confetti ──────────────────────────────────────────────────
-async function fireConfetti() {
-  try {
-    // @ts-ignore
-    const confetti = (await import(/* @vite-ignore */ 'canvas-confetti')).default;
-    confetti({
-      particleCount: 80,
-      spread: 60,
-      origin: { y: 0.6 },
-      colors: ['#7C3AED', '#10B981', '#F59E0B', '#EF4444', '#3B82F6'],
-    });
-  } catch {
-    // canvas-confetti not installed — fail silently
-  }
+function fireConfetti() {
+  // confetti disabled — install canvas-confetti to enable
 }
 
 // ── Priority badge ────────────────────────────────────────────
