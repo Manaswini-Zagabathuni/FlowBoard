@@ -1,26 +1,20 @@
 // ============================================================
 // FlowBoard — KanbanCard (upgraded)
 // src/components/KanbanCard.tsx
-//
-// Changes vs original:
-//  • Wrapped in React.memo — only re-renders when task data changes
-//  • Assignee avatar row
-//  • Completion confetti trigger (done status)
-//  • Spring drop animation via CSS
-//  • Keyboard: Enter / Space opens detail panel
 // ============================================================
 
-import React, { memo, useCallback, useEffect, useRef } from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { format, parseISO } from 'date-fns';
 import { GripVertical, Calendar, MessageSquare, AlertCircle } from 'lucide-react';
 import type { Task, Label, TeamMember } from '../types';
 
-// ── Confetti (canvas-confetti lazy import) ───────────────────
+// ── Confetti ──────────────────────────────────────────────────
 async function fireConfetti() {
   try {
-    const { default: confetti } = await import('canvas-confetti');
+    // @ts-ignore
+    const confetti = (await import(/* @vite-ignore */ 'canvas-confetti')).default;
     confetti({
       particleCount: 80,
       spread: 60,
@@ -91,7 +85,6 @@ export const KanbanCard = memo(function KanbanCard({
 
   const prevStatus = useRef(task.status);
 
-  // Fire confetti exactly once when status changes to "done"
   useEffect(() => {
     if (prevStatus.current !== 'done' && task.status === 'done') {
       fireConfetti();
@@ -116,10 +109,9 @@ export const KanbanCard = memo(function KanbanCard({
     [onOpen, task]
   );
 
-  const dueDateLabel =
-    task.due_date
-      ? format(parseISO(task.due_date), 'MMM d')
-      : null;
+  const dueDateLabel = task.due_date
+    ? format(parseISO(task.due_date), 'MMM d')
+    : null;
 
   const dueBadgeClass = isOverdue
     ? 'due-badge due-overdue'
@@ -174,7 +166,6 @@ export const KanbanCard = memo(function KanbanCard({
 
       {/* Footer row */}
       <div className="card-footer">
-        {/* Due date */}
         {dueDateLabel && (
           <span className={dueBadgeClass}>
             <Calendar size={11} />
@@ -182,7 +173,6 @@ export const KanbanCard = memo(function KanbanCard({
           </span>
         )}
 
-        {/* Comment count */}
         {commentCount > 0 && (
           <span className="meta-chip">
             <MessageSquare size={11} />
@@ -190,14 +180,12 @@ export const KanbanCard = memo(function KanbanCard({
           </span>
         )}
 
-        {/* Overdue alert icon */}
         {isOverdue && (
           <span className="overdue-icon" aria-label="Overdue">
             <AlertCircle size={13} />
           </span>
         )}
 
-        {/* Assignee avatars */}
         {assignees.length > 0 && (
           <div className="avatar-row" style={{ marginLeft: 'auto' }}>
             {assignees.slice(0, 3).map((m) => (
@@ -214,7 +202,6 @@ export const KanbanCard = memo(function KanbanCard({
     </div>
   );
 },
-// Custom equality — only re-render when the data we actually display changes
 (prev, next) =>
   prev.task.id === next.task.id &&
   prev.task.title === next.task.title &&
@@ -228,3 +215,5 @@ export const KanbanCard = memo(function KanbanCard({
   prev.assignees?.length === next.assignees?.length &&
   JSON.stringify(prev.task.labels) === JSON.stringify(next.task.labels)
 );
+
+import type React from 'react';

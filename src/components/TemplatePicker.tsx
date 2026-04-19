@@ -3,16 +3,16 @@
 // src/components/TemplatePicker.tsx
 // ============================================================
 
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { X, LayoutTemplate, Bug, CheckSquare, Plus } from 'lucide-react';
-import { BOARD_TEMPLATES, seedFromTemplate } from '../lib/templates';
+import { BOARD_TEMPLATES } from '../lib/templates';
 import type { BoardTemplate } from '../types';
 
 const ICONS: Record<string, React.ReactNode> = {
-  'agile-sprint': <LayoutTemplate size={22} />,
-  'bug-tracker': <Bug size={22} />,
+  'agile-sprint':  <LayoutTemplate size={22} />,
+  'bug-tracker':   <Bug size={22} />,
   'personal-todo': <CheckSquare size={22} />,
-  blank: <Plus size={22} />,
+  blank:           <Plus size={22} />,
 };
 
 interface TemplatePickerProps {
@@ -30,7 +30,12 @@ export function TemplatePicker({ onSelect, onClose }: TemplatePickerProps) {
   );
 
   return (
-    <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label="Choose a board template">
+    <div
+      className="modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Choose a board template"
+    >
       <div className="modal template-modal">
         <div className="modal-header">
           <h2>Choose a template</h2>
@@ -65,3 +70,5 @@ export function TemplatePicker({ onSelect, onClose }: TemplatePickerProps) {
     </div>
   );
 }
+
+import type React from 'react';

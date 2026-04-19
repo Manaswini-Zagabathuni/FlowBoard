@@ -1,17 +1,9 @@
 // ============================================================
 // FlowBoard — App.tsx (upgraded)
 // src/App.tsx
-//
-// Key changes vs original:
-//  • useTasks hook replaces scattered useState/useEffect
-//  • KeyboardSensor added for accessible drag-and-drop
-//  • TouchSensor tuned for mobile
-//  • TemplatePicker shown to new users
-//  • Global keyboard shortcuts: N = new task, / = search, ? = shortcuts
-//  • Theme toggle (light/dark) persisted to localStorage
 // ============================================================
 
-import React, {
+import {
   useState,
   useEffect,
   useCallback,
@@ -31,9 +23,8 @@ import {
   type DragEndEvent,
   type DragOverEvent,
 } from '@dnd-kit/core';
-import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import { arrayMove } from '@dnd-kit/sortable';
-import { supabase, signInAnonymously, getSession } from './lib/supabase';
+import { sortableKeyboardCoordinates, arrayMove } from '@dnd-kit/sortable';
+import { signInAnonymously, getSession } from './lib/supabase';
 import { useTasks } from './hooks/useTasks';
 import { KanbanColumn } from './components/KanbanColumn';
 import { KanbanCard } from './components/KanbanCard';
@@ -94,7 +85,6 @@ export default function App() {
     isDueSoon,
     addTask,
     editTask,
-    removeTask,
     reorderTasks,
   } = useTasks();
 
@@ -106,7 +96,7 @@ export default function App() {
       } else {
         signInAnonymously().then(() => {
           setAuthed(true);
-          setShowTemplate(true); // first-time user → show template picker
+          setShowTemplate(true);
         });
       }
     });
@@ -187,13 +177,12 @@ export default function App() {
   const handleDragOver = useCallback(
     ({ active, over }: DragOverEvent) => {
       if (!over) return;
-      const activeTask = tasks.find((t) => t.id === active.id);
+      const activeT = tasks.find((t) => t.id === active.id);
       const overStatus = STATUSES.includes(over.id as Status)
         ? (over.id as Status)
         : tasks.find((t) => t.id === over.id)?.status;
-      if (activeTask && overStatus && activeTask.status !== overStatus) {
-        // Optimistic cross-column move — will be confirmed on DragEnd
-        editTask(activeTask.id, { status: overStatus });
+      if (activeT && overStatus && activeT.status !== overStatus) {
+        editTask(activeT.id, { status: overStatus });
       }
     },
     [tasks, editTask]
@@ -204,12 +193,12 @@ export default function App() {
       setActiveTask(null);
       if (!over || active.id === over.id) return;
 
-      const activeTask = tasks.find((t) => t.id === active.id);
-      if (!activeTask) return;
+      const activeT = tasks.find((t) => t.id === active.id);
+      if (!activeT) return;
 
       const overStatus = STATUSES.includes(over.id as Status)
         ? (over.id as Status)
-        : tasks.find((t) => t.id === over.id)?.status ?? activeTask.status;
+        : tasks.find((t) => t.id === over.id)?.status ?? activeT.status;
 
       const columnTasks = tasksByStatus[overStatus] ?? [];
       const oldIndex = columnTasks.findIndex((t) => t.id === active.id);
@@ -226,10 +215,9 @@ export default function App() {
         status: overStatus,
       }));
 
-      // Also include the moved task if it wasn't already in the column
-      if (!updates.find((u) => u.id === activeTask.id)) {
+      if (!updates.find((u) => u.id === activeT.id)) {
         updates.push({
-          id: activeTask.id,
+          id: activeT.id,
           position: reordered.length,
           status: overStatus,
         });
@@ -237,10 +225,10 @@ export default function App() {
 
       await reorderTasks(updates);
 
-      if (activeTask.status !== overStatus) {
-        await editTask(activeTask.id, { status: overStatus }, {
+      if (activeT.status !== overStatus) {
+        await editTask(activeT.id, { status: overStatus }, {
           action: 'status_changed',
-          from_value: activeTask.status,
+          from_value: activeT.status,
           to_value: overStatus,
         });
       }
@@ -248,13 +236,20 @@ export default function App() {
     [tasks, tasksByStatus, reorderTasks, editTask]
   );
 
-  // ── Add task shortcut ──────────────────────────────────────
+  // ── Add task ───────────────────────────────────────────────
   const handleAddTask = useCallback(
     async (status: Status) => {
-      const title = window.prompt(`New task in "${status.replace('_', ' ')}":`);
+      const title = window.prompt(`New task in "${status.replace(/_/g, ' ')}":`);
       if (!title?.trim()) return;
       const pos = (tasksByStatus[status] ?? []).length;
-      await addTask({ title: title.trim(), description: null, status, priority: 'normal', due_date: null, position: pos });
+      await addTask({
+        title: title.trim(),
+        description: null,
+        status,
+        priority: 'normal',
+        due_date: null,
+        position: pos,
+      });
     },
     [addTask, tasksByStatus]
   );
@@ -293,7 +288,6 @@ export default function App() {
         </div>
 
         <div className="header-right">
-          {/* Search */}
           <input
             ref={searchRef}
             className="search-input"
@@ -304,7 +298,6 @@ export default function App() {
             aria-label="Search tasks"
           />
 
-          {/* Priority filter */}
           <select
             className="filter-select"
             value={filters.priorityFilter}
@@ -317,7 +310,6 @@ export default function App() {
             <option value="low">Low</option>
           </select>
 
-          {/* Theme toggle */}
           <button
             className="icon-btn"
             onClick={toggleTheme}
@@ -326,7 +318,6 @@ export default function App() {
             {theme === 'dark' ? '☀️' : '🌙'}
           </button>
 
-          {/* Keyboard shortcuts hint */}
           <button
             className="icon-btn"
             onClick={() => setShowShortcuts((s) => !s)}
@@ -375,8 +366,8 @@ export default function App() {
               key={status}
               status={status}
               tasks={filteredByStatus[status] ?? []}
-              assigneeMap={new Map()} // wire up from useAssignees hook
-              commentCountMap={new Map()} // wire up from useCommentCounts hook
+              assigneeMap={new Map()}
+              commentCountMap={new Map()}
               overdueFn={isOverdue}
               dueSoonFn={isDueSoon}
               onAddTask={handleAddTask}
@@ -384,7 +375,6 @@ export default function App() {
             />
           ))}
 
-          {/* Floating drag overlay */}
           <DragOverlay>
             {activeTask ? (
               <KanbanCard
@@ -398,7 +388,6 @@ export default function App() {
         </DndContext>
       </main>
 
-      {/* Template picker (first-time users) */}
       {showTemplate && (
         <TemplatePicker
           onSelect={handleTemplateSelect}
@@ -406,14 +395,10 @@ export default function App() {
         />
       )}
 
-      {/* Task detail panel — plug in your existing TaskDetail component here */}
       {detailTask && (
         <aside className="detail-panel" aria-label="Task details">
-          {/* <TaskDetail task={detailTask} onClose={() => setDetailTask(null)} onSave={editTask} onDelete={removeTask} /> */}
           <p style={{ padding: '1rem', color: 'var(--color-text-secondary)' }}>
-            Plug your existing TaskDetail component here and pass{' '}
-            <code>detailTask</code>, <code>editTask</code>, and{' '}
-            <code>removeTask</code>.
+            Task: <strong>{detailTask.title}</strong>
           </p>
           <button onClick={() => setDetailTask(null)}>Close</button>
         </aside>

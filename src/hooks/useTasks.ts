@@ -1,9 +1,6 @@
 // ============================================================
 // FlowBoard — useTasks hook
 // src/hooks/useTasks.ts
-//
-// Replaces raw useState/useEffect calls with a single hook that
-// handles optimistic updates, memoised selectors, and realtime.
 // ============================================================
 
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
@@ -16,6 +13,7 @@ import {
   updateTaskPositions,
   subscribeToTasks,
   logActivity,
+  supabase,
 } from '../lib/supabase';
 
 // ── Helpers ──────────────────────────────────────────────────
@@ -27,8 +25,7 @@ function isOverdue(task: Task): boolean {
 
 function isDueSoon(task: Task): boolean {
   if (!task.due_date || task.status === 'done') return false;
-  const diff =
-    new Date(task.due_date).getTime() - Date.now();
+  const diff = new Date(task.due_date).getTime() - Date.now();
   return diff >= 0 && diff < 3 * 24 * 60 * 60 * 1000;
 }
 
@@ -38,7 +35,6 @@ export function useTasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  // Track previous values for optimistic rollback
   const previousTasks = useRef<Task[]>([]);
 
   // Initial fetch
@@ -82,7 +78,7 @@ export function useTasks() {
     return () => { supabase.removeChannel(channel); };
   }, []);
 
-  // ── Memoised per-column selectors ──────────────────────────
+  // ── Memoised selectors ────────────────────────────────────
 
   const tasksByStatus = useMemo<Record<Status, Task[]>>(() => {
     const map: Record<Status, Task[]> = {
@@ -103,7 +99,7 @@ export function useTasks() {
     overdue: tasks.filter(isOverdue).length,
   }), [tasks]);
 
-  // ── Mutations with optimistic updates ──────────────────────
+  // ── Mutations ─────────────────────────────────────────────
 
   const addTask = useCallback(
     async (task: Omit<Task, 'id' | 'user_id' | 'created_at' | 'labels'>) => {
@@ -119,9 +115,7 @@ export function useTasks() {
       setTasks((prev) => [...prev, optimistic]);
       try {
         const saved = await createTask(task);
-        setTasks((prev) =>
-          prev.map((t) => (t.id === tempId ? saved : t))
-        );
+        setTasks((prev) => prev.map((t) => (t.id === tempId ? saved : t)));
         return saved;
       } catch (err: any) {
         setTasks(previousTasks.current);
@@ -136,7 +130,7 @@ export function useTasks() {
     async (
       id: string,
       updates: Partial<Omit<Task, 'id' | 'user_id' | 'created_at'>>,
-      logEntry?: { action: string; from_value?: string; to_value?: string }
+      logEntry?: { action: string; from_value?: string | null; to_value?: string | null }
     ) => {
       previousTasks.current = tasks;
       setTasks((prev) =>
@@ -145,7 +139,12 @@ export function useTasks() {
       try {
         const saved = await updateTask(id, updates);
         if (logEntry) {
-          await logActivity({ task_id: id, ...logEntry });
+          await logActivity({
+            task_id: id,
+            action: logEntry.action,
+            from_value: logEntry.from_value ?? null,
+            to_value: logEntry.to_value ?? null,
+          });
         }
         setTasks((prev) =>
           prev.map((t) => (t.id === id ? { ...t, ...saved } : t))
@@ -176,19 +175,14 @@ export function useTasks() {
   );
 
   const reorderTasks = useCallback(
-    async (
-      updates: Array<{ id: string; position: number; status: string }>
-    ) => {
-      // Optimistically update positions + status in one pass
+    async (updates: Array<{ id: string; position: number; status: string }>) => {
       previousTasks.current = tasks;
       const updatesMap = new Map(updates.map((u) => [u.id, u]));
       setTasks((prev) =>
         prev
           .map((t) => {
             const u = updatesMap.get(t.id);
-            return u
-              ? { ...t, position: u.position, status: u.status as Status }
-              : t;
+            return u ? { ...t, position: u.position, status: u.status as Status } : t;
           })
           .sort((a, b) => a.position - b.position)
       );
@@ -217,6 +211,3 @@ export function useTasks() {
     reorderTasks,
   };
 }
-
-// needed for cleanup in useEffect above
-import { supabase } from '../lib/supabase';
