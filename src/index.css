@@ -1,0 +1,6 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body, #root { height: 100%; width: 100%; }
+body { font-family: 'DM Sans', -apple-system, sans-serif; background: var(--fb-bg, #0f0f13); color: var(--fb-text, #e8e8f0); line-height: 1.5; }
+#root { display: flex; flex-direction: column; min-height: 100vh; }
+button { font-family: inherit; cursor: pointer; }
+input, select, textarea { font-family: inherit; }
