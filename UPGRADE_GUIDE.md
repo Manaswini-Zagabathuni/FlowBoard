@@ -1,4 +1,4 @@
-# FlowBoard — Upgrade Guide
+# FlowBoard - Upgrade Guide
 
 ## What's included
 
@@ -87,18 +87,18 @@ npm run dev
 ## What's new at a glance
 
 ### Performance
-- **React.memo** on `KanbanCard` and `KanbanColumn` — stops re-rendering all cards during drag
+- **React.memo** on `KanbanCard` and `KanbanColumn` - stops re-rendering all cards during drag
 - **useMemo** for per-column task slices and board stats
 - **useCallback** on all event handlers
 - **Optimistic updates** with automatic rollback on error
 - **Database indexes** on user_id, status, position, task_id
 
 ### New features
-- **Board templates** — Agile Sprint, Bug Tracker, Personal To-Do, Blank
-- **Team members & assignees** — avatar circles on cards, assignee picker in detail panel
-- **Realtime sync** — tasks update live via Supabase Postgres changes
-- **Keyboard shortcuts** — N = new task, / = search, ? = show shortcuts, Esc = close, arrow keys to drag
-- **Keyboard drag-and-drop** — fully accessible via @dnd-kit KeyboardSensor
+- **Board templates** - Agile Sprint, Bug Tracker, Personal To-Do, Blank
+- **Team members & assignees** - avatar circles on cards, assignee picker in detail panel
+- **Realtime sync** - tasks update live via Supabase Postgres changes
+- **Keyboard shortcuts** - N = new task, / = search, ? = show shortcuts, Esc = close, arrow keys to drag
+- **Keyboard drag-and-drop** - fully accessible via @dnd-kit KeyboardSensor
 
 ### UI
 - **Light/dark theme** toggle with localStorage persistence
