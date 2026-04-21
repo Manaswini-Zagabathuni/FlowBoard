@@ -60,7 +60,7 @@ VITE_SUPABASE_URL=https://your-project-id.supabase.co
 VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
-> ⚠️ Never commit your `.env` file. Never use the service role key in the frontend — only the anon key.
+>  Never commit your `.env` file. Never use the service role key in the frontend — only the anon key.
 
 ### 4. Run locally
 
