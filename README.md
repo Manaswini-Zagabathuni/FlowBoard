@@ -1,5 +1,5 @@
 # FlowBoard - Kanban Task Manager
-A polished, full-featured Kanban board built with React + TypeScript + Supabase.
+A polished, full-featured Kanban board built with React + TypeScript + Supabase. 
 
 ---  
  
