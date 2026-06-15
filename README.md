@@ -17,7 +17,7 @@ A polished, full-featured Kanban board built with React + TypeScript + Supabase.
 - **Board stats** - total tasks, completed, overdue at a glance
 
 --- 
-
+ 
 ## Tech Stack
 
 | Layer | Technology |
