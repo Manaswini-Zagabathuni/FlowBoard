@@ -15,7 +15,7 @@ A polished, full-featured Kanban board built with React + TypeScript + Supabase.
 - **Due date indicators** - visual badges for upcoming and overdue tasks
 - **Search & filter** - live search + filter by priority and label
 - **Board stats** - total tasks, completed, overdue at a glance
-
+ 
 --- 
  
 ## Tech Stack
